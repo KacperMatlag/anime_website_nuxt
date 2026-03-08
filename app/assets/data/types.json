@@ -1,0 +1,10 @@
+{
+  "data": [
+    { "mal_id": "tv", "name": "tv" },
+    { "mal_id": "movie", "name": "movie" },
+    { "mal_id": "ova", "name": "ova" },
+    { "mal_id": "special", "name": "special" },
+    { "mal_id": "ona", "name": "ona" },
+    { "mal_id": "music", "name": "music" }
+  ]
+}
