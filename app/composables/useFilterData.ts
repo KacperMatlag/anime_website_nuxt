@@ -18,7 +18,8 @@ const useFilterData = () => {
   })
 
   const updateRoute = () => {
-    router.push({ query: { ...urlParams.value } })
+    const params = filterKeyWithValue({ ...urlParams.value })
+    router.push({ query: params })
   }
 
   return { dropDownLists, urlParams, updateRoute }
@@ -39,4 +40,10 @@ type UrlParams = {
   genres: string[]
   type: string
   rating: string
+}
+
+const filterKeyWithValue = (urlParams: UrlParams) => {
+  return Object.fromEntries(Object.entries({ ...urlParams }).filter(([_, v]) => {
+    return (Array.isArray(v) || typeof v === 'string') && v.length > 0
+  }))
 }
