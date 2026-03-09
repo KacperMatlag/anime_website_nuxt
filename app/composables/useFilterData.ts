@@ -14,7 +14,9 @@ const useFilterData = () => {
   const urlParams = ref<UrlParams>({
     genres: (route.query['genres'] as string[]) || [],
     rating: (route.query['rating'] as string) || '',
-    type: (route.query['type'] as string) || ''
+    type: (route.query['type'] as string) || '',
+    order_by: 'score',
+    sort: 'desc'
   })
 
   const updateRoute = () => {
@@ -40,6 +42,8 @@ type UrlParams = {
   genres: string[]
   type: string
   rating: string
+  order_by: string
+  sort: string
 }
 
 const filterKeyWithValue = (urlParams: UrlParams) => {

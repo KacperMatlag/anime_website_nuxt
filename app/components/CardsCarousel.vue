@@ -3,13 +3,11 @@ import type { PageHeaderProps } from '@nuxt/ui'
 import type { ResponseData } from '~/types'
 
 const { query, header } = defineProps<{
-  query?: string
+  query: string
   header: PageHeaderProps
 }>()
-
-const { data: anime } = await useFetch<ResponseData>('/api/anime?' + query, {
-  lazy: true
-})
+const { apiCall } = useJikanApi()
+const { data: anime } = await useAsyncData<ResponseData>(query, () => apiCall({ page: 1, params: query }))
 </script>
 
 <template>

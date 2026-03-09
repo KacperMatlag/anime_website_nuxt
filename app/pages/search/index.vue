@@ -1,36 +1,83 @@
 <script setup lang="ts">
-import type { ResponseData } from '~/types'
+import { useInfiniteQuery } from '@tanstack/vue-query'
+import useJikanApi from '~/composables/useJikanApi'
 
 const route = useRoute()
+const { apiCall } = useJikanApi()
 
 const paramsString = computed(() =>
-  new URLSearchParams(
-    Object.entries(route.query) as [string, string][]
-  ).toString()
+  new URLSearchParams(route.query as Record<string, string>).toString()
 )
 
-const { data: anime, pending } = await useAsyncData<ResponseData>(
-  () => `anime-${paramsString.value}`,
-  () => $fetch('/api/anime?' + paramsString.value),
-  {
-    lazy: true
-  }
-)
+const {
+  data: anime,
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+  suspense,
+  isFetching
+} = useInfiniteQuery({
+  queryKey: ['animesearch', paramsString],
+  queryFn: async ({ pageParam = 1 }) => apiCall({ page: pageParam, params: paramsString.value }),
+  initialPageParam: 1,
+  getNextPageParam: lastPage =>
+    lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined,
+  select: data => data.pages.flatMap(({ data }) => data)
+})
+
+await suspense()
+
+const loadMoreTrigger = ref<HTMLElement | null>(null)
+let observer: IntersectionObserver | null = null
+
+watch(loadMoreTrigger, (el) => {
+  if (!el) return
+
+  observer?.disconnect()
+
+  observer = new IntersectionObserver(
+    ([entry]) => {
+      if (
+        entry?.isIntersecting
+        && hasNextPage.value
+        && !isFetchingNextPage.value
+      ) {
+        fetchNextPage()
+      }
+    },
+    {
+      rootMargin: '200px'
+    }
+  )
+
+  observer.observe(el)
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 </script>
 
 <template>
   <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
-    <AnimeCardSkeletonMap
-      v-if="pending"
-      :quantity="40"
-    />
     <AnimeCard
-      v-for="value in anime?.data"
-      v-else
+      v-for="value in anime"
       :key="value.mal_id"
       :anime="value"
       class="w-full"
     />
+
+    <div
+      ref="loadMoreTrigger"
+      class="h-10 w-full flex justify-center py-4"
+    >
+      <p v-if="isFetchingNextPage||isFetching">
+        Ładowanie...
+      </p>
+      <p v-else-if="!hasNextPage">
+        Koniec wyników
+      </p>
+    </div>
     <FilterSlideover />
   </div>
 </template>
