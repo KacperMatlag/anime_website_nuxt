@@ -10,8 +10,7 @@ useHead({
 })
 
 const title = 'Nuxt Starter Template'
-const description
-  = 'A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.'
+const description = 'cos'
 
 useSeoMeta({
   title,
@@ -26,7 +25,7 @@ useSeoMeta({
 
 <template>
   <UApp>
-    <Header />
+    <AppHeader />
     <UCarousel
       v-slot="{ item }"
       :items="genres.data"
