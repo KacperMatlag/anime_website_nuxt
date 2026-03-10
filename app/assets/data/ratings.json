@@ -1,5 +1,6 @@
 {
   "data": [
+    {"mal_id":"","name":"Any"},
     { "mal_id": "g", "name": "g" },
     { "mal_id": "pg", "name": "pg" },
     { "mal_id": "pg13", "name": "pg13" },

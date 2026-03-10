@@ -1,7 +1,7 @@
 import pThrottle from 'p-throttle'
 
 const apiLimiter = pThrottle({
-  limit: 3,
+  limit: 2,
   interval: 1000,
   strict: true,
   onDelay: () => {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { dropDownLists, urlParams, updateRoute } = useFilterData()
+const { filterMap, urlParams, updateRoute } = useFilterData()
 </script>
 
 <template>
@@ -15,64 +15,32 @@ const { dropDownLists, urlParams, updateRoute } = useFilterData()
       variant="subtle"
       class="fixed right-10 bottom-10"
     />
-
     <template #body>
       <UCollapsible
-        class="flex flex-col gap-2 w-full"
-        :ui="{
-          content: 'max-h-50 overflow-auto no-scrollbar'
-        }"
+        v-for="(filter, index) in filterMap"
+        :key="index"
       >
         <UButton
-          label="Kategorie"
+          :label="filter.header"
           color="neutral"
           variant="subtle"
           trailing-icon="i-lucide-chevron-down"
           block
         />
-
-        <template #content>
+        <template
+          #content
+        >
           <UCheckboxGroup
-            v-model="urlParams.genres"
-            :items="dropDownLists.genres"
+            v-if="!filter.single"
+            v-model="urlParams[filter.vmodel] as string[]"
+            :ui="{ fieldset: 'my-2', root: 'max-h-50 overflow-y-auto' }"
+            :items="filter.items"
           />
-        </template>
-      </UCollapsible>
-      <UCollapsible
-        class="flex flex-col gap-2 w-full"
-        default-open
-      >
-        <UButton
-          label="Typ"
-          color="neutral"
-          variant="subtle"
-          trailing-icon="i-lucide-chevron-down"
-          block
-        />
-
-        <template #content>
           <URadioGroup
-            v-model="urlParams.type"
-            :items="dropDownLists.types"
-          />
-        </template>
-      </UCollapsible>
-      <UCollapsible
-        class="flex flex-col gap-2 w-full"
-        default-open
-      >
-        <UButton
-          label="Rating"
-          color="neutral"
-          variant="subtle"
-          trailing-icon="i-lucide-chevron-down"
-          block
-        />
-
-        <template #content>
-          <URadioGroup
-            v-model="urlParams.rating"
-            :items="dropDownLists.ratings"
+            v-else
+            v-model="urlParams[filter.vmodel] as string"
+            :items="filter.items"
+            :ui="{ fieldset: 'my-2', root: 'max-h-50 overflow-y-auto' }"
           />
         </template>
       </UCollapsible>

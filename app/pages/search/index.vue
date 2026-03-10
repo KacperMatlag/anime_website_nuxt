@@ -14,14 +14,14 @@ const {
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
-  suspense,
-  isFetching
+  suspense
 } = useInfiniteQuery({
   queryKey: ['animesearch', paramsString],
   queryFn: async ({ pageParam = 1 }) => apiCall({ page: pageParam, params: paramsString.value }),
   initialPageParam: 1,
-  getNextPageParam: lastPage =>
-    lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined,
+  getNextPageParam: (lastPage) => {
+    return lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined
+  },
   select: data => data.pages.flatMap(({ data }) => data)
 })
 
@@ -59,25 +59,25 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
-    <AnimeCard
-      v-for="value in anime"
-      :key="value.mal_id"
-      :anime="value"
-      class="w-full"
-    />
+  <div>
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
+      <AnimeCard
+        v-for="value in anime"
+        :key="value.mal_id"
+        :anime="value"
+        class="w-full"
+      />
 
-    <div
-      ref="loadMoreTrigger"
-      class="h-10 w-full flex justify-center py-4"
-    >
-      <p v-if="isFetchingNextPage||isFetching">
-        Ładowanie...
-      </p>
-      <p v-else-if="!hasNextPage">
-        Koniec wyników
-      </p>
+      <div
+        ref="loadMoreTrigger"
+      />
     </div>
+    <p
+      v-if="anime?.length == 0"
+      class="w-full text-center"
+    >
+      Nie ma wyników
+    </p>
     <FilterSlideover />
   </div>
 </template>
