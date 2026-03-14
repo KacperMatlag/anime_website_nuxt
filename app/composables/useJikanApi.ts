@@ -9,7 +9,6 @@ const throttledFetch = apiLimiter(async (url: string) => {
 
 const useJikanApi = () => {
   const apiCall = ({ page, params }: ApiCallParams) => {
-    console.log(`/api/anime?${params}&page=${page}`)
     return throttledFetch(`/api/anime?${params}&page=${page}`)
   }
 

@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const { filterMap, urlParams, updateRoute } = useFilterData()
+
+const filters = ref<{ [T in keyof typeof urlParams.value]?: string }>({
+  genres: ''
+})
 </script>
 
 <template>
@@ -17,8 +21,8 @@ const { filterMap, urlParams, updateRoute } = useFilterData()
     />
     <template #body>
       <UCollapsible
-        v-for="(filter, index) in filterMap"
-        :key="index"
+        v-for="(filter) in filterMap"
+        :key="filter.vmodel"
       >
         <UButton
           :label="filter.header"
@@ -30,17 +34,42 @@ const { filterMap, urlParams, updateRoute } = useFilterData()
         <template
           #content
         >
-          <UCheckboxGroup
+          <div
             v-if="!filter.single"
-            v-model="urlParams[filter.vmodel] as string[]"
-            :ui="{ fieldset: 'my-2', root: 'max-h-50 overflow-y-auto' }"
-            :items="filter.items"
-          />
+            class="flex flex-col"
+          >
+            <UInput
+              v-model="filters.genres"
+              size="sm"
+              variant="soft"
+              class="py-3"
+              placeholder="Kategoria"
+            >
+              <template
+                v-if="filters.genres?.length"
+                #trailing
+              >
+                <UButton
+                  color="neutral"
+                  variant="link"
+                  size="sm"
+                  icon="i-lucide-circle-x"
+                  aria-label="Clear input"
+                  @click="filters.genres=''"
+                />
+              </template>
+            </UInput>
+            <UCheckboxGroup
+              v-model="urlParams[filter.vmodel] as string[]"
+              :ui="{ fieldset: 'my-2', root: 'h-50 max-h-50 overflow-y-auto' }"
+              :items="filter.items.filter(z => z.label.toLocaleLowerCase().includes(filters[filter.vmodel]!.toLocaleLowerCase()))"
+            />
+          </div>
           <URadioGroup
             v-else
             v-model="urlParams[filter.vmodel] as string"
             :items="filter.items"
-            :ui="{ fieldset: 'my-2', root: 'max-h-50 overflow-y-auto' }"
+            :ui="{ fieldset: 'my-2', root: 'h-50 max-h-50 overflow-y-auto' }"
           />
         </template>
       </UCollapsible>

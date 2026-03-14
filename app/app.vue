@@ -1,5 +1,5 @@
 <script setup>
-import genres from '~/assets/data/genres.json'
+import AppHeader from './components/AppHeader.vue'
 
 useHead({
   meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
@@ -27,35 +27,6 @@ useSeoMeta({
 <template>
   <UApp>
     <AppHeader />
-    <UCarousel
-      v-slot="{ item }"
-      :items="genres.data"
-      arrows
-      :ui="{
-        item: 'basis-auto shrink-0',
-        container: 'ms-8 me-8 h-15 flex items-center-safe',
-        prev: 'sm:inset-s-2 z-10',
-        next: 'sm:inset-e-2 z-10'
-      }"
-    >
-      <NuxtLink
-        :to="{
-          path: '/search',
-          query: { genres: [item.mal_id] },
-          force: true,
-          replace: true
-        }"
-        class="whitespace-nowrap"
-      >
-        <UBadge
-          size="lg"
-          variant="outline"
-          color="warning"
-        >
-          {{ item.name }}
-        </UBadge>
-      </NuxtLink>
-    </UCarousel>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

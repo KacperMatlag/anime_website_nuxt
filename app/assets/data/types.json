@@ -1,6 +1,6 @@
 {
   "data": [
-    {"mal_id":"","name":"Any"},
+    {"mal_id":"","name":"any"},
     { "mal_id": "tv", "name": "tv" },
     { "mal_id": "movie", "name": "movie" },
     { "mal_id": "ova", "name": "ova" },

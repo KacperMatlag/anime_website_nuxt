@@ -7,13 +7,14 @@ defineProps<{ anime: Anime }>()
 <template>
   <NuxtLink
     :to="anime.url"
-    class="flex flex-1 justify-center"
     target="_blank"
   >
     <div class="flex flex-col aspect-9/16 min-w-0">
-      <div class="overflow-hidden rounded-xl flex-8 relative">
+      <div
+        class="overflow-hidden rounded-xl flex-8 relative bg-no-repeat"
+      >
         <img
-          :src="anime.images.webp.image_url"
+          :src="anime.images.webp.large_image_url"
           class="w-full h-full max-h-full max-w-full object-cover hover:scale-[1.1] transition-all duration-400"
         >
         <div class="absolute bottom-1 right-1 flex gap-2">
@@ -23,7 +24,7 @@ defineProps<{ anime: Anime }>()
             variant="solid"
             color="warning"
           >
-            {{ anime.score.toFixed(2) }}
+            {{ anime.score?anime.score.toFixed(2):'-' }}
           </UBadge>
         </div>
       </div>
