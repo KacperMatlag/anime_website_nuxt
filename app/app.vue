@@ -28,7 +28,10 @@ useSeoMeta({
   <UApp>
     <AppHeader />
     <NuxtLayout>
-      <NuxtPage />
+      <UMain class="w-full lg:w-[80%] mx-auto py-5">
+        <NuxtPage />
+      </UMain>
     </NuxtLayout>
+    <AppFooter />
   </UApp>
 </template>

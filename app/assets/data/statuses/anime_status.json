@@ -1,0 +1,8 @@
+{
+  "data": [
+    { "mal_id": "", "name": "any" },
+    { "mal_id": "airing", "name": "airing" },
+    { "mal_id": "complete", "name": "complete" },
+    { "mal_id": "upcoming", "name": "upcoming" }
+  ]
+}

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useInfiniteQuery } from '@tanstack/vue-query'
-import type { ResponseData } from '~/types'
+import type { Anime } from '~/types/anime'
+import type { ApiMediaResponse } from '~/types/global'
+
 import apiLimiter from '~/utils/throttle'
 
 const route = useRoute()
@@ -15,7 +17,7 @@ const {
   queryKey: ['anime', () => route.path],
   initialPageParam: 1,
   queryFn: async ({ pageParam }) => {
-    return await apiLimiter(async () => await $fetch<ResponseData>(`/api/anime/top`, { query: { page: pageParam, type: route.params.type } }))()
+    return await apiLimiter(async () => await $fetch<ApiMediaResponse<Anime>>(`/api/anime/top`, { query: { page: pageParam, type: route.params.type } }))()
   },
   getNextPageParam: lp => lp.pagination.has_next_page ? lp.pagination.current_page + 1 : undefined,
   select: ({ pages }) => pages.flatMap(({ data }) => data)
@@ -33,7 +35,7 @@ const topMap: { label: string, value: string }[] = [
     value: 'movie'
   },
   {
-    label: 'Ova',
+    label: 'OVA',
     value: 'ova'
   },
   {
@@ -41,7 +43,7 @@ const topMap: { label: string, value: string }[] = [
     value: 'special'
   },
   {
-    label: 'Ona',
+    label: 'ONA',
     value: 'ona'
   },
   {
@@ -49,11 +51,11 @@ const topMap: { label: string, value: string }[] = [
     value: 'music'
   },
   {
-    label: 'Cm',
+    label: 'Reklama',
     value: 'cm'
   },
   {
-    label: 'Pv',
+    label: 'Zapowiedź',
     value: 'pv'
   },
   {
@@ -88,7 +90,7 @@ const topMap: { label: string, value: string }[] = [
     >
       <template #default="{ item }">
         <AnimeCard
-          :anime="item"
+          :data="item"
           class="w-full"
         />
       </template>

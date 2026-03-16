@@ -1,0 +1,12 @@
+{
+  "data": [
+    { "mal_id": "", "name": "any" },
+    { "mal_id": "manga", "name": "manga" },
+    { "mal_id": "novel", "name": "novel" },
+    { "mal_id": "lightnovel", "name": "lightnovel" },
+    { "mal_id": "oneshot", "name": "oneshot" },
+    { "mal_id": "doujin", "name": "doujin" },
+    { "mal_id": "manhwa", "name": "manhwa" },
+    { "mal_id": "manhua", "name": "manhua" }
+  ]
+}

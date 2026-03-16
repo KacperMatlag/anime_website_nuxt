@@ -1,9 +1,5 @@
 <script setup lang="ts">
-const { filterMap, urlParams, updateRoute } = useFilterData()
-
-const filters = ref<{ [T in keyof typeof urlParams.value]?: string }>({
-  genres: ''
-})
+const { dropdownLists, updateRoute, urlParams } = useFilterData()
 </script>
 
 <template>
@@ -21,8 +17,8 @@ const filters = ref<{ [T in keyof typeof urlParams.value]?: string }>({
     />
     <template #body>
       <UCollapsible
-        v-for="(filter) in filterMap"
-        :key="filter.vmodel"
+        v-for="(filter) in dropdownLists"
+        :key="filter.header"
       >
         <UButton
           :label="filter.header"
@@ -35,11 +31,11 @@ const filters = ref<{ [T in keyof typeof urlParams.value]?: string }>({
           #content
         >
           <div
-            v-if="!filter.single"
+            v-if="(!filter.single)"
             class="flex flex-col"
           >
-            <UInput
-              v-model="filters.genres"
+            <!-- <UInput
+              v-model=""
               size="sm"
               variant="soft"
               class="py-3"
@@ -58,16 +54,16 @@ const filters = ref<{ [T in keyof typeof urlParams.value]?: string }>({
                   @click="filters.genres=''"
                 />
               </template>
-            </UInput>
+            </UInput> -->
             <UCheckboxGroup
-              v-model="urlParams[filter.vmodel] as string[]"
+              v-model="(urlParams[filter.key])"
+              :items="filter.items"
               :ui="{ fieldset: 'my-2', root: 'h-50 max-h-50 overflow-y-auto' }"
-              :items="filter.items.filter(z => z.label.toLocaleLowerCase().includes(filters[filter.vmodel]!.toLocaleLowerCase()))"
             />
           </div>
           <URadioGroup
             v-else
-            v-model="urlParams[filter.vmodel] as string"
+            v-model="(urlParams[filter.key])"
             :items="filter.items"
             :ui="{ fieldset: 'my-2', root: 'h-50 max-h-50 overflow-y-auto' }"
           />

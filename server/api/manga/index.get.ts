@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  return $fetch('https://api.jikan.moe/v4/anime', { query })
+
+  return await $fetch(`https://api.jikan.moe/v4/manga`, { query })
 })

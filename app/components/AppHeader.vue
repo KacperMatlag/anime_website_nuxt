@@ -1,58 +1,7 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import { useNavigationMap } from '~/composables/useNavigationMap'
 
-const route = useRoute()
-
-const menuMap = computed<NavigationMenuItem[]>(() => [
-  {
-    label: 'Anime',
-    active: route.path.startsWith('/anime'),
-    icon: 'material-symbols:play-circle-outline-rounded',
-    to: '/anime',
-    children: [
-      {
-        label: 'Top',
-        description: 'Najlepsze serie',
-        to: '/anime/top',
-        active: route.path.startsWith('/anime/top'),
-        icon: 'material-symbols:trophy-outline'
-      },
-      {
-        label: 'Wyszukiwarka',
-        to: '/anime/search',
-        description: 'Poszukaj czegoś dla siebie',
-        active: route.path.startsWith('/anime/search'),
-        icon: 'material-symbols:search-rounded'
-      },
-      {
-        label: 'Losuj',
-        to: '/',
-        description: 'Losowy wynik',
-        disabled: true,
-        icon: 'ion:dice-outline'
-      }
-    ]
-  },
-  {
-    label: 'Manga',
-    icon: 'material-symbols:book-5-outline',
-    to: '/manga',
-    active: route.path.startsWith('/manga')
-  },
-  {
-    label: 'Sezony',
-    to: '/seasons',
-    icon: 'mdi:calendar',
-    active: route.path.startsWith('/seasons')
-  },
-  {
-    label: 'Producenci',
-    disabled: true,
-    icon: 'mdi:company',
-    active: route.path.startsWith('/producers')
-  }
-
-])
+const { menuMap } = useNavigationMap()
 </script>
 
 <template>
@@ -67,12 +16,23 @@ const menuMap = computed<NavigationMenuItem[]>(() => [
       }"
       :items="menuMap"
     />
+    <template #body>
+      <div class="flex flex-col text-center gap-3 text-2xl">
+        <ULink
+          v-for="item in menuMap"
+          :key="item.to?.toString()"
+          :to="item.to"
+        >
+          {{ item.label }}
+        </ULink>
+      </div>
+    </template>
     <template #right>
       <UColorModeButton />
     </template>
   </UHeader>
 </template>
 
-<style>
+<style scoped>
 nav>div{width: 100%;}
 </style>

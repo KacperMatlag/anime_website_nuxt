@@ -2,6 +2,10 @@
 import { useInfiniteQuery } from '@tanstack/vue-query'
 import useJikanApi from '~/composables/useJikanApi'
 
+definePageMeta({
+  layout: 'filter-page-layout'
+})
+
 const route = useRoute()
 const { apiCall } = useJikanApi()
 
@@ -39,16 +43,15 @@ const message = computed(() => {
 <template>
   <div>
     <InfinityScrollGrid
+      v-slot="{ item }"
       :items="animeList"
       :load-more-if="hasNextPage&&!isFetchingNextPage"
       @load-more="fetchNextPage"
     >
-      <template #default="{ item }">
-        <AnimeCard
-          :anime="item"
-          class="w-full"
-        />
-      </template>
+      <AnimeCard
+        :data="item"
+        class="w-full"
+      />
     </InfinityScrollGrid>
     <p
       class="h-50 text-white/80 text-center"

@@ -17,9 +17,10 @@ export default defineNuxtPlugin((nuxt) => {
     defaultOptions: {
       queries: {
         staleTime: 5000,
-        // Zapobiega ponownemu pobieraniu danych na kliencie,
-        // które właśnie przyszły z serwera
-        refetchOnMount: false
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        retry: 2,
+        retryDelay: attempt => attempt * 2000
       }
     }
   })

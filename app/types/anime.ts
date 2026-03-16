@@ -1,4 +1,4 @@
-export interface ResponseData {
+export interface AnimeResponseList {
   pagination: Pagination
   data: Anime[]
 }
@@ -20,7 +20,7 @@ export interface Anime {
   mal_id: number
   url: string
   images: Images
-
+  // trailer: Trailer
   approved: boolean
   titles: Title[]
   title: string
@@ -50,7 +50,7 @@ export interface Anime {
   licensors: Licensor[]
   studios: Studio[]
   genres: Genre[]
-
+  // explicit_genres: any[]
   themes: Theme[]
   demographics: Demographic[]
 }
@@ -71,6 +71,21 @@ export interface Webp {
   small_image_url: string
   large_image_url: string
 }
+
+// export interface Trailer {
+//   youtube_id: any
+//   url: any
+//   embed_url?: string
+//   images: Images2
+// }
+
+// export interface Images2 {
+//   image_url: any
+//   small_image_url: any
+//   medium_image_url: any
+//   large_image_url: any
+//   maximum_image_url: any
+// }
 
 export interface Title {
   type: string

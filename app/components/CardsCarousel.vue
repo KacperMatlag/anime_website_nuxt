@@ -1,14 +1,17 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Anime | Manga">
 import type { ButtonProps, PageHeaderProps } from '@nuxt/ui'
-import type { ResponseData } from '~/types'
+import type { Anime } from '~/types/anime'
+import type { ApiMediaResponse } from '~/types/global'
+import type { Manga } from '~/types/manga'
+import apiLimiter from '~/utils/throttle'
 
-const { query, header } = defineProps<{
-  query: string
+const props = defineProps<{
+  fn: () => Promise<ApiMediaResponse<T>>
   header: PageHeaderProps
   buttons?: ButtonProps[]
 }>()
-const { apiCall } = useJikanApi()
-const { data: anime } = await useAsyncData<ResponseData>(query, () => apiCall({ page: 1, params: query }))
+
+const { data: anime } = await useAsyncData<ApiMediaResponse<T>>(props.fn.toString(), () => apiLimiter(props.fn)())
 </script>
 
 <template>
@@ -31,6 +34,9 @@ const { data: anime } = await useAsyncData<ResponseData>(query, () => apiCall({ 
     }"
     arrows
   >
-    <AnimeCard :anime="item" />
+    <AnimeCard
+      :key="item.mal_id"
+      :data="item"
+    />
   </UCarousel>
 </template>

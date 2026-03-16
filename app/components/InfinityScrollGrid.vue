@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T">
-const { items, loadMoreIf, rootMargin = '200px' } = defineProps<{
+const { items, loadMoreIf = true, rootMargin = '200px' } = defineProps<{
   items: T[] | undefined
-  loadMoreIf: boolean
+  loadMoreIf?: boolean
   rootMargin?: string
 }>()
 

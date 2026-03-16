@@ -1,0 +1,10 @@
+{
+  "data": [
+    { "mal_id": "", "name": "any" },
+    { "mal_id": "publishing", "name": "publishing" },
+    { "mal_id": "complete", "name": "complete" },
+    { "mal_id": "hiatus", "name": "hiatus" },
+    { "mal_id": "discontinued", "name": "discontinued" },
+    { "mal_id": "upcoming", "name": "upcoming" }
+  ]
+}

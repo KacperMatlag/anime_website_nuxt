@@ -1,6 +1,6 @@
-import _genres from '~/assets/data/genres.json'
-import _ratings from '~/assets/data/ratings.json'
-import _types from '~/assets/data/types.json'
+import genres from '~/assets/data/genres/export'
+import statuses from '~/assets/data/statuses/export'
+import types from '~/assets/data/types/export'
 
 const useFilterData = () => {
   const router = useRouter()
@@ -11,7 +11,8 @@ const useFilterData = () => {
     rating: '',
     type: '',
     order_by: 'score',
-    sort: 'desc'
+    sort: 'desc',
+    status: ''
   })
 
   watch(
@@ -22,7 +23,8 @@ const useFilterData = () => {
         rating: (query['rating'] as string) || '',
         type: (query['type'] as string) || '',
         order_by: 'score',
-        sort: 'desc'
+        sort: 'desc',
+        status: (query['status'] as string) || ''
       }
     },
     { immediate: true }
@@ -33,48 +35,71 @@ const useFilterData = () => {
     router.push({ query: params })
   }
 
-  return { dropDownLists, urlParams, updateRoute, filterMap }
+  const dropdownLists = computed<Record<string, FilterConfig>>(() => ({
+    genres: {
+      header: 'Kategorie',
+      key: 'genres',
+      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? genres[0] : genres[1]),
+      single: false
+
+    },
+    types: {
+      header: 'Typy',
+      key: 'type',
+      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? types[0] : types[1]),
+      single: true
+    },
+    statuses: {
+      header: 'Statusy',
+      key: 'status',
+      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? statuses[0] : statuses[1]),
+      single: true
+    }
+  }))
+
+  return { dropdownLists, urlParams, updateRoute }
 }
 
 export default useFilterData
 
-const mapTo = <TData extends { name: string, mal_id: number | string }>(
-  data: TData[]
+const mapToCheckboxOrRadioGroup = (
+  data: { data: { name: string, mal_id: number | string }[] } | undefined
 ) => {
-  return data.map(({ name, mal_id }) => ({
+  return data!.data.map(({ name, mal_id }) => ({
     label: name,
     value: mal_id.toString()
+  }))
+}
+
+const filterKeyWithValue = (urlParams: SearchParams) => {
+  return Object.fromEntries(Object.entries(urlParams).filter(([_, v]) => {
+    return (Array.isArray(v) || typeof v === 'string') && v.length > 0
   }))
 }
 
 export type SearchParams = {
   genres: string[]
   type: string
+  status: string
   rating: string
   order_by: string
   sort: string
 }
 
-const filterKeyWithValue = (urlParams: SearchParams) => {
-  return Object.fromEntries(Object.entries({ ...urlParams }).filter(([_, v]) => {
-    return (Array.isArray(v) || typeof v === 'string') && v.length > 0
-  }))
-}
-
-type Data = {
-  vmodel: keyof SearchParams
-  items: { label: string, value: string }[]
+type SingleParamQueryKey = 'type' | 'status' | 'rating'
+type MultiParamQueryKey = 'genres'
+interface MultiSelectFilter {
   header: string
-  single: boolean
+  key: MultiParamQueryKey
+  items: { label: string, value: string }[]
+  single: false
 }
 
-const genres = mapTo<(typeof _genres.data)[0]>(_genres.data)
-const types = mapTo<(typeof _types.data)[0]>(_types.data)
-const ratings = mapTo<(typeof _ratings.data)[0]>(_ratings.data)
-const dropDownLists = { genres, types, ratings }
+interface SingleSelectFilter {
+  header: string
+  key: SingleParamQueryKey
+  items: { label: string, value: string }[]
+  single: true
+}
 
-const filterMap: Data[] = ([
-  { vmodel: 'genres', items: dropDownLists.genres, header: 'kategorie', single: false },
-  { vmodel: 'rating', items: dropDownLists.ratings, header: 'rating', single: true },
-  { vmodel: 'type', items: dropDownLists.types, header: 'typ', single: true }
-])
+type FilterConfig = MultiSelectFilter | SingleSelectFilter
