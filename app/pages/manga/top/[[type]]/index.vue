@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useInfiniteQuery } from '@tanstack/vue-query'
-import type { MangaListResponse } from '~/types/manga'
-import apiLimiter from '~/utils/throttle'
+import type { ApiMediaResponse } from '~/types/global'
+import type { Manga } from '~/types/manga'
 
 const route = useRoute()
 
@@ -12,9 +12,9 @@ const {
   fetchNextPage,
   suspense
 } = useInfiniteQuery({
-  queryKey: ['mangaTop', () => route.query],
-  queryFn: async ({ pageParam = 1 }) => {
-    return await apiLimiter(async () => await $fetch<MangaListResponse>('/api/manga/top', { query: { ...route.query, page: pageParam } }))()
+  queryKey: ['mangaTop', () => route.params],
+  queryFn: async ({ pageParam: page }) => {
+    return await throttledFetch<ApiMediaResponse<Manga>>('/api/manga/top', { query: { page, type: route.params.type } })
   },
   initialPageParam: 1,
   getNextPageParam: (lastPage) => {
@@ -24,15 +24,68 @@ const {
 })
 
 await suspense()
+
+const mangaType: { label: string, value: string }[] = [
+  {
+    label: 'Manga',
+    value: 'manga'
+  },
+  {
+    label: 'Novel',
+    value: 'novel'
+  },
+  {
+    label: 'Lightnovel',
+    value: 'lightnovel'
+  },
+  {
+    label: 'Oneshot',
+    value: 'oneshot'
+  },
+  {
+    label: 'Doujin',
+    value: 'doujin'
+  },
+  {
+    label: 'Manhwa',
+    value: 'manhwa'
+  },
+  {
+    label: 'Manhua',
+    value: 'manhua'
+  }
+]
 </script>
 
 <template>
-  <InfinityScrollGrid
-    v-slot="{ item }"
-    :items="mangaList"
-    :load-more-if="hasNextPage&&!isFetchingNextPage"
-    @load-more="async() => await fetchNextPage()"
-  >
-    <AnimeCard :data="item" />
-  </InfinityScrollGrid>
+  <div class="flex flex-col gap-5">
+    <UPageHeader
+      title="Najlepsze Mangi"
+      :description="(route.params.type as string)"
+    />
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2">
+      <NuxtLink
+        v-for="item in mangaType"
+        :key="item.label"
+        class="w-full"
+        :to="'/manga/top/'+item.value"
+      >
+        <UButton
+          class="w-full"
+          size="sm"
+          :ui="{ base: 'flex justify-center text-sm' }"
+        >
+          {{ item.label }}
+        </UButton>
+      </NuxtLink>
+    </div>
+    <InfinityScrollGrid
+      v-slot="{ item }"
+      :items="mangaList"
+      :load-more-if="hasNextPage&&!isFetchingNextPage"
+      @load-more="async() => await fetchNextPage()"
+    >
+      <AnimeCard :data="item" />
+    </InfinityScrollGrid>
+  </div>
 </template>

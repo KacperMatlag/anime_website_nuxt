@@ -9,9 +9,9 @@ useHead({
   }
 })
 
-const title = 'Nuxt Starter Template'
+const title = 'Strona z Anime i Mangą'
 const description
-  = 'A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.'
+  = 'Poszukaj czegoś dla siebie'
 
 useSeoMeta({
   title,
@@ -28,7 +28,7 @@ useSeoMeta({
   <UApp>
     <AppHeader />
     <NuxtLayout>
-      <UMain class="w-full lg:w-[80%] mx-auto py-5">
+      <UMain class="w-full lg:w-[80%] mx-auto p-3">
         <NuxtPage />
       </UMain>
     </NuxtLayout>

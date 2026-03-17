@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query'
-import useJikanApi from '~/composables/useJikanApi'
+import type { Anime } from '~/types/anime'
+import type { ApiMediaResponse } from '~/types/global'
 
 definePageMeta({
   layout: 'filter-page-layout'
 })
 
 const route = useRoute()
-const { apiCall } = useJikanApi()
 
 const paramsString = computed(() =>
   new URLSearchParams(route.query as Record<string, string>).toString()
@@ -20,15 +19,19 @@ const {
   fetchNextPage,
   suspense,
   isFetching
-} = useInfiniteQuery({
-  queryKey: ['animesearch', paramsString],
-  queryFn: async ({ pageParam = 1 }) => await apiCall({ page: pageParam, params: paramsString.value }),
-  initialPageParam: 1,
-  getNextPageParam: (lastPage) => {
-    return lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined
-  },
-  select: ({ pages }) => pages.flatMap(({ data }) => data)
+} = useSimpleMediaInfiniteQuery({
+  key: ['animeSearch', paramsString],
+  fn: async ({ pageParam = 1 }) => throttledFetch<ApiMediaResponse<Anime>>('/api/anime', { query: { ...route.query, page: pageParam } })
 })
+// = useInfiniteQuery({
+//   queryKey: ['animesearch', paramsString],
+//   queryFn: async ({ pageParam = 1 }) => await apiCall({ page: pageParam, params: paramsString.value }),
+//   initialPageParam: 1,
+//   getNextPageParam: (lastPage) => {
+//     return lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined
+//   },
+//   select: ({ pages }) => pages.flatMap(({ data }) => data)
+// })
 
 await suspense()
 

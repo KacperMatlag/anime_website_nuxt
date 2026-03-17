@@ -1,8 +1,8 @@
 import pThrottle from 'p-throttle'
 
 const apiLimiter = pThrottle({
-  limit: 1,
-  interval: 30,
+  limit: 2,
+  interval: 900,
   strict: true,
   onDelay: () => {
     console.log('Poza limitem')

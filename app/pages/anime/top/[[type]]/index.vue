@@ -2,8 +2,7 @@
 import { useInfiniteQuery } from '@tanstack/vue-query'
 import type { Anime } from '~/types/anime'
 import type { ApiMediaResponse } from '~/types/global'
-
-import apiLimiter from '~/utils/throttle'
+import { throttledFetch } from '~/utils/throttle'
 
 const route = useRoute()
 
@@ -16,8 +15,8 @@ const {
 } = useInfiniteQuery({
   queryKey: ['anime', () => route.path],
   initialPageParam: 1,
-  queryFn: async ({ pageParam }) => {
-    return await apiLimiter(async () => await $fetch<ApiMediaResponse<Anime>>(`/api/anime/top`, { query: { page: pageParam, type: route.params.type } }))()
+  queryFn: async ({ pageParam: page }) => {
+    return await throttledFetch<ApiMediaResponse<Anime>>('/api/anime/top', { query: { page, type: route.params.type } })
   },
   getNextPageParam: lp => lp.pagination.has_next_page ? lp.pagination.current_page + 1 : undefined,
   select: ({ pages }) => pages.flatMap(({ data }) => data)
@@ -31,7 +30,7 @@ const topMap: { label: string, value: string }[] = [
     value: 'tv'
   },
   {
-    label: 'Movie',
+    label: 'Film',
     value: 'movie'
   },
   {
@@ -67,6 +66,10 @@ const topMap: { label: string, value: string }[] = [
 
 <template>
   <div class="flex flex-col gap-5">
+    <UPageHeader
+      title="Najlepsze Anime"
+      :description="(route.params.type as string)"
+    />
     <div class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2">
       <NuxtLink
         v-for="item in topMap"

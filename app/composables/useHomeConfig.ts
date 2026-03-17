@@ -42,7 +42,7 @@ const MANGA_CAROUSEL_CONFIG: CardsCarouselProps[] = [
       description: 'Aktualnie nadawane'
     },
     buttons: [{
-      to: '/anime/top?filter=airing',
+      to: '/manga/top?filter=publishing',
       label: 'Zobacz Więcej'
     }]
   },
@@ -55,7 +55,7 @@ const MANGA_CAROUSEL_CONFIG: CardsCarouselProps[] = [
     },
     buttons: [
       {
-        to: '/anime/top?filter=bypopularity',
+        to: '/manga/top?filter=bypopularity',
         label: 'Zobacz Więcej'
       }
     ]

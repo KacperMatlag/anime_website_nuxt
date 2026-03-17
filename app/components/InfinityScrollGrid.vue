@@ -31,6 +31,7 @@ useIntersectionObserver(
     />
     <div
       ref="loadMoreTrigger"
+      class="col-span-full h-full"
     />
   </div>
 </template>

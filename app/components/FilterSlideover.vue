@@ -1,5 +1,11 @@
 <script setup lang="ts">
 const { dropdownLists, updateRoute, urlParams } = useFilterData()
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
 </script>
 
 <template>
@@ -74,7 +80,10 @@ const { dropdownLists, updateRoute, urlParams } = useFilterData()
       <UButton
         class="w-full"
         :ui="{ base: 'flex flex-1 justify-center' }"
-        @click="updateRoute"
+        @click="() => {
+          updateRoute()
+          scrollToTop()
+        }"
       >
         Szukaj
       </UButton>

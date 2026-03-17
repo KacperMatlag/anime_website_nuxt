@@ -17,14 +17,28 @@ const { menuMap } = useNavigationMap()
       :items="menuMap"
     />
     <template #body>
-      <div class="flex flex-col text-center gap-3 text-2xl">
-        <ULink
-          v-for="item in menuMap"
-          :key="item.to?.toString()"
-          :to="item.to"
+      <div class="flex flex-col text-center gap-5">
+        <div
+          v-for="parentLink in menuMap"
+          :key="parentLink.to?.toString()"
+          class="flex flex-col gap-2"
         >
-          {{ item.label }}
-        </ULink>
+          <ULink
+            :to="parentLink.to"
+            class="text-2xl"
+          >
+            {{ parentLink.label }}
+          </ULink>
+          <ULink
+            v-for="link in parentLink.children"
+            :key="link.to?.toString()"
+            :to="link.to"
+            class="text-md"
+          >
+            {{ link.label }}
+          </ULink>
+          <USeparator />
+        </div>
       </div>
     </template>
     <template #right>
