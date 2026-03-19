@@ -10,8 +10,7 @@ useHead({
 })
 
 const title = 'Strona z Anime i Mangą'
-const description
-  = 'Poszukaj czegoś dla siebie'
+const description = 'Poszukaj czegoś dla siebie'
 
 useSeoMeta({
   title,

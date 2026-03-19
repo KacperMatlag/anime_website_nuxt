@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig()
   const query = getQuery(event)
-  return await $fetch('https://api.jikan.moe/v4/seasons/now', { query })
+  return await $fetch('/seasons/now', { query, baseURL: config.public.apiBase })
 })

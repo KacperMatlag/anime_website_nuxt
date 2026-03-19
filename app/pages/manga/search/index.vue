@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query'
-import type { MangaListResponse } from '~/types/manga'
-import apiLimiter from '~/utils/throttle'
+import type { ApiMediaResponse } from '~/types/global'
+import type { Manga } from '~/types/manga'
 
 definePageMeta({
   layout: 'filter-page-layout'
@@ -15,16 +14,11 @@ const {
   isFetchingNextPage,
   fetchNextPage,
   suspense
-} = useInfiniteQuery({
-  queryKey: ['mangaSearch', () => route.query],
-  queryFn: async ({ pageParam = 1 }) => {
-    return await apiLimiter(async () => await $fetch<MangaListResponse>('/api/manga', { query: { ...route.query, page: pageParam } }))()
-  },
-  initialPageParam: 1,
-  getNextPageParam: (lastPage) => {
-    return lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined
-  },
-  select: ({ pages }) => pages.flatMap(({ data }) => data)
+} = useSimpleMediaInfiniteQuery({
+  key: ['mangaSearch', () => route.query],
+  fn: async ({ pageParam: page }) => {
+    return await throttledFetch<ApiMediaResponse<Manga>>('/api/manga', { query: { ...route.query, page } })
+  }
 })
 
 await suspense()

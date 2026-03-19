@@ -8,6 +8,7 @@ const useFilterData = () => {
 
   const urlParams = ref<SearchParams>({
     genres: [],
+    genres_exclude: [],
     rating: '',
     type: '',
     order_by: 'score',
@@ -19,19 +20,20 @@ const useFilterData = () => {
     () => route.query,
     (query) => {
       urlParams.value = {
-        genres: (query['genres'] as string[]) || [],
+        genres: ((query['genres'] as string)?.split(',')) || [],
         rating: (query['rating'] as string) || '',
         type: (query['type'] as string) || '',
         order_by: 'score',
         sort: 'desc',
-        status: (query['status'] as string) || ''
+        status: (query['status'] as string) || '',
+        genres_exclude: (query['genres_exclude'] as string)?.split(',') || []
       }
     },
     { immediate: true }
   )
 
   const updateRoute = () => {
-    const params = filterKeyWithValue({ ...urlParams.value })
+    const params = filterEmptyValueAndPrepareQuery({ ...urlParams.value })
     router.push({ query: params })
   }
 
@@ -54,6 +56,12 @@ const useFilterData = () => {
       key: 'status',
       items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? statuses[0] : statuses[1]),
       single: true
+    },
+    genres_exclude: {
+      header: 'Niechciane kategorie',
+      key: 'genres_exclude',
+      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? genres[0] : genres[1]),
+      single: false
     }
   }))
 
@@ -71,14 +79,17 @@ const mapToCheckboxOrRadioGroup = (
   }))
 }
 
-const filterKeyWithValue = (urlParams: SearchParams) => {
+const filterEmptyValueAndPrepareQuery = (urlParams: SearchParams) => {
   return Object.fromEntries(Object.entries(urlParams).filter(([_, v]) => {
     return (Array.isArray(v) || typeof v === 'string') && v.length > 0
+  }).map(([k, v]) => {
+    return Array.isArray(v) ? [k, v.join(',')] : [k, v]
   }))
 }
 
 export type SearchParams = {
   genres: string[]
+  genres_exclude: string[]
   type: string
   status: string
   rating: string
@@ -87,7 +98,7 @@ export type SearchParams = {
 }
 
 type SingleParamQueryKey = 'type' | 'status' | 'rating'
-type MultiParamQueryKey = 'genres'
+type MultiParamQueryKey = 'genres' | 'genres_exclude'
 interface MultiSelectFilter {
   header: string
   key: MultiParamQueryKey

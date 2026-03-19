@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query'
 import type { Anime } from '~/types/anime'
 import type { ApiMediaResponse } from '~/types/global'
-import { throttledFetch } from '~/utils/throttle'
 
 const route = useRoute()
 
@@ -12,14 +10,9 @@ const {
   hasNextPage,
   isFetchingNextPage,
   suspense
-} = useInfiniteQuery({
-  queryKey: ['anime', () => route.path],
-  initialPageParam: 1,
-  queryFn: async ({ pageParam: page }) => {
-    return await throttledFetch<ApiMediaResponse<Anime>>('/api/anime/top', { query: { page, type: route.params.type } })
-  },
-  getNextPageParam: lp => lp.pagination.has_next_page ? lp.pagination.current_page + 1 : undefined,
-  select: ({ pages }) => pages.flatMap(({ data }) => data)
+} = useSimpleMediaInfiniteQuery({
+  key: ['topAnime', () => route.params, () => route.query],
+  fn: async ({ pageParam: page }) => await throttledFetch<ApiMediaResponse<Anime>>('/api/anime/top', { query: { ...route.query, page, type: route.params.type } })
 })
 
 await suspense()

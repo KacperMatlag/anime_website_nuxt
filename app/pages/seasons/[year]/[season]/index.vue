@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query'
 import type { Anime } from '~/types/anime'
 import type { ApiMediaResponse } from '~/types/global'
-import apiLimiter from '~/utils/throttle'
 
 const route = useRoute()
 
@@ -17,15 +15,11 @@ const {
   isFetchingNextPage,
   suspense,
   fetchNextPage
-} = useInfiniteQuery({
-  queryKey: ['season', params],
-  initialPageParam: 1,
-  queryFn: async ({ pageParam }) => {
-    return await apiLimiter(async () => await $fetch<ApiMediaResponse<Anime>>(`/api/seasons/season?`, { query: { ...params.value, page: pageParam } }))()
-  },
-  getNextPageParam: lp => lp.pagination.has_next_page ? lp.pagination.current_page + 1 : undefined,
-  select: ({ pages }) => pages.flatMap(({ data }) => data)
-
+} = useSimpleMediaInfiniteQuery({
+  key: ['season', params],
+  fn: async ({ pageParam: page }) => {
+    return await throttledFetch<ApiMediaResponse<Anime>>(`/api/seasons/season/${params.value.year}/${params.value.season}`, { query: { page } })
+  }
 })
 
 await suspense()

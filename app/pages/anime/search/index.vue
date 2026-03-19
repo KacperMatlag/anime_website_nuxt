@@ -8,10 +8,6 @@ definePageMeta({
 
 const route = useRoute()
 
-const paramsString = computed(() =>
-  new URLSearchParams(route.query as Record<string, string>).toString()
-)
-
 const {
   data: animeList,
   hasNextPage,
@@ -20,18 +16,9 @@ const {
   suspense,
   isFetching
 } = useSimpleMediaInfiniteQuery({
-  key: ['animeSearch', paramsString],
+  key: ['animeSearch', () => route.query],
   fn: async ({ pageParam = 1 }) => throttledFetch<ApiMediaResponse<Anime>>('/api/anime', { query: { ...route.query, page: pageParam } })
 })
-// = useInfiniteQuery({
-//   queryKey: ['animesearch', paramsString],
-//   queryFn: async ({ pageParam = 1 }) => await apiCall({ page: pageParam, params: paramsString.value }),
-//   initialPageParam: 1,
-//   getNextPageParam: (lastPage) => {
-//     return lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined
-//   },
-//   select: ({ pages }) => pages.flatMap(({ data }) => data)
-// })
 
 await suspense()
 

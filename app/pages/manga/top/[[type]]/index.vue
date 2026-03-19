@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query'
 import type { ApiMediaResponse } from '~/types/global'
 import type { Manga } from '~/types/manga'
 
@@ -11,16 +10,11 @@ const {
   isFetchingNextPage,
   fetchNextPage,
   suspense
-} = useInfiniteQuery({
-  queryKey: ['mangaTop', () => route.params],
-  queryFn: async ({ pageParam: page }) => {
-    return await throttledFetch<ApiMediaResponse<Manga>>('/api/manga/top', { query: { page, type: route.params.type } })
-  },
-  initialPageParam: 1,
-  getNextPageParam: (lastPage) => {
-    return lastPage.pagination.has_next_page ? lastPage.pagination.current_page + 1 : undefined
-  },
-  select: ({ pages }) => pages.flatMap(({ data }) => data)
+} = useSimpleMediaInfiniteQuery({
+  key: ['mangaTop', () => route.params, () => route.query],
+  fn: async ({ pageParam: page }) => {
+    return await throttledFetch<ApiMediaResponse<Manga>>('/api/manga/top', { query: { ...route.query, page, type: route.params.type } })
+  }
 })
 
 await suspense()
