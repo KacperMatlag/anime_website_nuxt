@@ -1,0 +1,7 @@
+.github
+.nuxt
+node_modules
+
+.dockerignore
+docker-compose.yaml
+DockerFile

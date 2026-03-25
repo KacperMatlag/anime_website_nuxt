@@ -1,8 +1,8 @@
 {
   "data": [
-    { "mal_id": "", "name": "any" },
-    { "mal_id": "airing", "name": "airing" },
-    { "mal_id": "complete", "name": "complete" },
-    { "mal_id": "upcoming", "name": "upcoming" }
+    { "mal_id": "", "name": "Jakiekolwiek" },
+    { "mal_id": "airing", "name": "Nadawane" },
+    { "mal_id": "complete", "name": "Zakończone" },
+    { "mal_id": "upcoming", "name": "Nadchodzące" }
   ]
 }

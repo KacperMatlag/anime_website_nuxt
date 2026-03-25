@@ -17,7 +17,10 @@ const {
   isFetching
 } = useSimpleMediaInfiniteQuery({
   key: ['animeSearch', () => route.query],
-  fn: async ({ pageParam = 1 }) => throttledFetch<ApiMediaResponse<Anime>>('/api/anime', { query: { ...route.query, page: pageParam } })
+  fn: async ({ pageParam = 1 }) =>
+    throttledFetch<ApiMediaResponse<Anime>>('/api/anime', {
+      query: { ...route.query, page: pageParam }
+    })
 })
 
 await suspense()
@@ -31,23 +34,24 @@ const message = computed(() => {
 </script>
 
 <template>
-  <div>
-    <InfinityScrollGrid
-      v-slot="{ item }"
-      :items="animeList"
-      :load-more-if="hasNextPage&&!isFetchingNextPage"
-      @load-more="fetchNextPage"
-    >
-      <AnimeCard
-        :data="item"
-        class="w-full"
-      />
-    </InfinityScrollGrid>
-    <p
-      class="h-50 text-white/80 text-center"
-    >
-      {{ message }}
-    </p>
-    <FilterSlideover />
+  <div class="flex flex-col gap-3">
+    <FilterBadgeContainer />
+    <div>
+      <InfinityScrollGrid
+        v-slot="{ item }"
+        :items="animeList"
+        :load-more-if="hasNextPage && !isFetchingNextPage"
+        @load-more="fetchNextPage"
+      >
+        <AnimeCard
+          :data="item"
+          class="w-full"
+        />
+      </InfinityScrollGrid>
+      <p class="h-50 text-white/80 text-center">
+        {{ message }}
+      </p>
+      <FilterSlideover />
+    </div>
   </div>
 </template>

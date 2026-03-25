@@ -1,91 +1,4 @@
-import genres from '~/assets/data/genres/export'
-import statuses from '~/assets/data/statuses/export'
-import types from '~/assets/data/types/export'
-
-const useFilterData = () => {
-  const router = useRouter()
-  const route = useRoute()
-
-  const urlParams = ref<SearchParams>({
-    genres: [],
-    genres_exclude: [],
-    rating: '',
-    type: '',
-    order_by: 'score',
-    sort: 'desc',
-    status: ''
-  })
-
-  watch(
-    () => route.query,
-    (query) => {
-      urlParams.value = {
-        genres: ((query['genres'] as string)?.split(',')) || [],
-        rating: (query['rating'] as string) || '',
-        type: (query['type'] as string) || '',
-        order_by: 'score',
-        sort: 'desc',
-        status: (query['status'] as string) || '',
-        genres_exclude: (query['genres_exclude'] as string)?.split(',') || []
-      }
-    },
-    { immediate: true }
-  )
-
-  const updateRoute = () => {
-    const params = filterEmptyValueAndPrepareQuery({ ...urlParams.value })
-    router.push({ query: params })
-  }
-
-  const dropdownLists = computed<Record<string, FilterConfig>>(() => ({
-    genres: {
-      header: 'Kategorie',
-      key: 'genres',
-      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? genres[0] : genres[1]),
-      single: false
-
-    },
-    types: {
-      header: 'Typy',
-      key: 'type',
-      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? types[0] : types[1]),
-      single: true
-    },
-    statuses: {
-      header: 'Statusy',
-      key: 'status',
-      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? statuses[0] : statuses[1]),
-      single: true
-    },
-    genres_exclude: {
-      header: 'Niechciane kategorie',
-      key: 'genres_exclude',
-      items: mapToCheckboxOrRadioGroup(route.path.includes('anime') ? genres[0] : genres[1]),
-      single: false
-    }
-  }))
-
-  return { dropdownLists, urlParams, updateRoute }
-}
-
-export default useFilterData
-
-const mapToCheckboxOrRadioGroup = (
-  data: { data: { name: string, mal_id: number | string }[] } | undefined
-) => {
-  return data!.data.map(({ name, mal_id }) => ({
-    label: name,
-    value: mal_id.toString()
-  }))
-}
-
-const filterEmptyValueAndPrepareQuery = (urlParams: SearchParams) => {
-  return Object.fromEntries(Object.entries(urlParams).filter(([_, v]) => {
-    return (Array.isArray(v) || typeof v === 'string') && v.length > 0
-  }).map(([k, v]) => {
-    return Array.isArray(v) ? [k, v.join(',')] : [k, v]
-  }))
-}
+import useStaticData from './useStaticData'
 
 export type SearchParams = {
   genres: string[]
@@ -97,20 +10,151 @@ export type SearchParams = {
   sort: string
 }
 
-type SingleParamQueryKey = 'type' | 'status' | 'rating'
-type MultiParamQueryKey = 'genres' | 'genres_exclude'
-interface MultiSelectFilter {
+type FilterConfig = {
   header: string
-  key: MultiParamQueryKey
+  key: MultiParamQueryKey | SingleParamQueryKey
   items: { label: string, value: string }[]
-  single: false
 }
 
-interface SingleSelectFilter {
-  header: string
-  key: SingleParamQueryKey
-  items: { label: string, value: string }[]
-  single: true
+type JSONData = {
+  data: {
+    name: string
+    mal_id: number | string
+  }[]
 }
 
-type FilterConfig = MultiSelectFilter | SingleSelectFilter
+type FilterContext
+  = | { type: 'multi', value: string[], key: MultiParamQueryKey }
+    | { type: 'single', value: string, key: SingleParamQueryKey }
+
+const useFilterData = () => {
+  const route = useRoute()
+  const { urlParams } = useQueryFilters()
+  const { base, animeSpecyfic } = useStaticData()
+
+  const filterQueries = reactive<Record<MultiParamQueryKey, string>>({
+    genres: '',
+    genres_exclude: ''
+  })
+
+  const getFilterContext = (key: string): FilterContext | null => {
+    if (!(key in urlParams.value)) return null
+
+    if (keyType.isMulti(key)) {
+      return {
+        type: 'multi',
+        key: key as MultiParamQueryKey,
+        value: urlParams.value[key]
+      }
+    }
+
+    if (keyType.isSingle(key)) {
+      return {
+        type: 'single',
+        key: key as SingleParamQueryKey,
+        value: urlParams.value[key]
+      }
+    }
+    return null
+  }
+
+  const selectSet = (data: JSONData[], key?: MultiParamQueryKey) => {
+    const isAnime = route.path.includes('anime')
+    const set = isAnime ? data[0] : data[1]
+    const map = mapToCheckboxOrRadioGroup(set)
+
+    if (key && filterQueries[key]) {
+      const query = filterQueries[key].toLowerCase()
+      return map.filter(z => z.label.toLowerCase().includes(query))
+    }
+    return map
+  }
+
+  const dropdownLists = computed<Partial<Record<keyof SearchParams, FilterConfig>>>(() => {
+    const _base: Partial<Record<keyof SearchParams, FilterConfig>> = {
+      genres: {
+        header: 'Kategorie',
+        key: 'genres',
+        items: selectSet(base.genres, 'genres')
+      },
+      type: {
+        header: 'Typy',
+        key: 'type',
+        items: selectSet(base.types)
+      },
+      status: {
+        header: 'Statusy',
+        key: 'status',
+        items: selectSet(base.statuses)
+      },
+      genres_exclude: {
+        header: 'Niechciane kategorie',
+        key: 'genres_exclude',
+        items: selectSet(base.genres, 'genres_exclude')
+      },
+      sort: {
+        header: 'Rodzaj Sortowanie',
+        key: 'sort',
+        items: mapToCheckboxOrRadioGroup(base.sort)
+      },
+      order_by: {
+        header: 'Sortowanie Po',
+        key: 'order_by',
+        items: selectSet(base.orderBys)
+      }
+    }
+
+    if (route.path.includes('anime')) {
+      _base.rating = {
+        header: 'Rating',
+        items: mapToCheckboxOrRadioGroup(animeSpecyfic.ratings),
+        key: 'rating'
+      }
+    }
+    return _base
+  })
+
+  const activeFilters = computed(() => {
+    return Object.keys(dropdownLists.value).flatMap((k) => {
+      const config = dropdownLists.value[k as keyof SearchParams]
+      const ctx = getFilterContext(k)
+
+      if (!config || !ctx) return []
+
+      if (ctx.type === 'multi') {
+        return config.items
+          .filter(item => ctx.value.includes(item.value))
+          .map(item => ({
+            key: k,
+            label: item.label,
+            value: item.value
+          }))
+      } else {
+        const item = config.items.find(z => String(z.value) === String(ctx.value))
+        if (!item || item.value === '') return []
+        return [{
+          key: k,
+          label: item.label,
+          value: item.value
+        }]
+      }
+    })
+  })
+
+  return {
+    dropdownLists,
+    filterQueries,
+    activeFilters,
+    getFilterContext
+  }
+}
+
+export default useFilterData
+
+const mapToCheckboxOrRadioGroup = (data: JSONData | undefined) => {
+  if (!data) return []
+  return data.data.map(({ name, mal_id }) => ({
+    label: name,
+    value: mal_id.toString()
+  }))
+}

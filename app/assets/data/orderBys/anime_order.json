@@ -1,0 +1,15 @@
+{
+  "data": [
+    { "mal_id": "mal_id", "name": "ID (Numer MAL)" },
+    { "mal_id": "title", "name": "Tytuł" },
+    { "mal_id": "start_date", "name": "Data rozpoczęcia" },
+    { "mal_id": "end_date", "name": "Data zakończenia" },
+    { "mal_id": "episodes", "name": "Liczba odcinków" },
+    { "mal_id": "score", "name": "Ocena" },
+    { "mal_id": "scored_by", "name": "Liczba ocen" },
+    { "mal_id": "rank", "name": "Ranking" },
+    { "mal_id": "popularity", "name": "Popularność" },
+    { "mal_id": "members", "name": "Liczba członków" },
+    { "mal_id": "favorites", "name": "Ulubione" }
+  ]
+}

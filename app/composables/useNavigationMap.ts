@@ -18,7 +18,7 @@ export const useNavigationMap = () => {
         },
         {
           label: 'Wyszukiwarka',
-          to: `/${type}/search`,
+          to: `/${type}/search?order_by=score&sort=desc`,
           description: 'Poszukaj czegoś dla siebie',
           icon: 'material-symbols:search-rounded'
         },

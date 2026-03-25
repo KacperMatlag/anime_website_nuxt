@@ -17,7 +17,7 @@ const { dropdownLists } = useFilterData()
     <NuxtLink
       :to="{
         path: '/anime/search',
-        query: { genres: [item.value], sort: 'desc', order_by: 'score' },
+        query: { genres: item.value, sort: 'desc', order_by: 'score' },
         force: true,
         replace: true
       }"

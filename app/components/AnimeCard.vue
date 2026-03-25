@@ -10,9 +10,9 @@ defineProps<{ data: Anime | Manga }>()
     :to="data.url"
     target="_blank"
   >
-    <div class="flex flex-col aspect-9/16 min-w-0">
+    <div class="flex flex-col min-w-0">
       <div
-        class="overflow-hidden rounded-xl flex-8 relative bg-no-repeat"
+        class="overflow-hidden aspect-5/8 rounded-xl flex-8 relative bg-no-repeat"
       >
         <img
           :src="data.images.webp.large_image_url"
@@ -29,21 +29,25 @@ defineProps<{ data: Anime | Manga }>()
           </UBadge>
         </div>
       </div>
-      <div class="flex flex-col flex-1 py-2 gap-1">
-        <span class="text-md truncate line-clamp-1">
-          {{ data.title }}
-        </span>
-        <div class="flex gap-2 items-start">
+      <div class="flex flex-col flex-2 py-2 gap-1">
+        <div class="flex flex-1 items-center">
+          <p class="text-md truncate line-clamp-1">
+            {{ data.title }}
+          </p>
+        </div>
+        <div class="flex gap-2 flex-1 items-center">
           <UBadge
             v-for="{ name, mal_id } in data.genres.slice(0, 2)"
             :key="mal_id"
             :ui="{ base: 'text-center' }"
             variant="soft"
+            size="md"
           >
             {{ name }}
           </UBadge>
           <UBadge
             v-if="data.genres.length-2>0"
+            size="md"
           >
             +{{ data.genres.length-2 }}
           </UBadge>
