@@ -11,8 +11,6 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.95",
-    "@iconify-json/simple-icons": "^1.2.72",
     "@nuxt/ui": "^4.5.1",
     "@tanstack/vue-query": "^5.92.9",
     "@vueuse/core": "^14.2.1",
@@ -22,9 +20,6 @@
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
-    "@iconify-json/material-symbols": "^1.2.62",
-    "@iconify-json/mdi": "^1.2.3",
-    "@iconify-json/openmoji": "^1.2.23",
     "@nuxt/eslint": "^1.15.2",
     "eslint": "^10.0.2",
     "typescript": "^5.9.3",

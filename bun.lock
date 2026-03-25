@@ -5,8 +5,6 @@
     "": {
       "name": "anime_website_nuxt",
       "dependencies": {
-        "@iconify-json/lucide": "^1.2.95",
-        "@iconify-json/simple-icons": "^1.2.72",
         "@nuxt/ui": "^4.5.1",
         "@tanstack/vue-query": "^5.92.9",
         "@vueuse/core": "^14.2.1",
@@ -16,9 +14,6 @@
         "tailwindcss": "^4.2.1",
       },
       "devDependencies": {
-        "@iconify-json/material-symbols": "^1.2.62",
-        "@iconify-json/mdi": "^1.2.3",
-        "@iconify-json/openmoji": "^1.2.23",
         "@nuxt/eslint": "^1.15.2",
         "eslint": "^10.0.2",
         "typescript": "^5.9.3",
@@ -196,16 +191,6 @@
     "@humanwhocodes/module-importer": ["@humanwhocodes/module-importer@1.0.1", "", {}, "sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA=="],
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
-
-    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.95", "", { "dependencies": { "@iconify/types": "2.0.0" } }, "sha512-SxDM/NEJtcGGAiLAnaZ7rcmVxkJI8esswTZLCm5BfNcoPf/yawIImb4nNfsu4dtFzP/Cl6KRg+vZq521zOUOnQ=="],
-
-    "@iconify-json/material-symbols": ["@iconify-json/material-symbols@1.2.62", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-FmAzV8UT7pcH6bv8vJxxFKrf3/ebt/CzpUxljjbWgWw0PjbjUHlkwxmtHTiRNS+MGD7t6ii2JdiDWHdBkvPSpQ=="],
-
-    "@iconify-json/mdi": ["@iconify-json/mdi@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-O3cLwbDOK7NNDf2ihaQOH5F9JglnulNDFV7WprU2dSoZu3h3cWH//h74uQAB87brHmvFVxIOkuBX2sZSzYhScg=="],
-
-    "@iconify-json/openmoji": ["@iconify-json/openmoji@1.2.23", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-ppgoydoehDJ08pEtuyYF+X1FXvbvAvOcFDI+Gtb+7o1SVxP7EbO2xMCDjY8aNW98a5PBs57PJuv1iopdV+75oA=="],
-
-    "@iconify-json/simple-icons": ["@iconify-json/simple-icons@1.2.72", "", { "dependencies": { "@iconify/types": "2.0.0" } }, "sha512-wkcixntHvaCoqPqerGrNFcHQ3Yx1ux4ZkhscCDK0DEHpP62XCH+cxq1HTsRjbUiQl/M9K8bj03HF6Wgn5iE2rQ=="],
 
     "@iconify/collections": ["@iconify/collections@1.0.650", "", { "dependencies": { "@iconify/types": "2.0.0" } }, "sha512-rGtrLIeHu4qVTfe/Bsy5TIoRmj0KmvSNrPWu8RFX7bHeq5NqAz/VNXQBPRhtCX43D/ZIozB9vLwLWr+ETHbhEg=="],
 
